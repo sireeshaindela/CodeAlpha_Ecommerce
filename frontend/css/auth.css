@@ -1,23 +1,38 @@
 /* ==========================================================================
    ShopEasy Authentication Pages Styling (Login & Registration)
+   Modern, secure, clean authentication cards with feedback states
    ========================================================================== */
 
 .auth-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 200px);
-  padding: 40px 20px;
+  min-height: calc(100vh - 160px);
+  padding: 48px 20px;
+  background: radial-gradient(circle at 50% 20%, rgba(79, 70, 229, 0.05) 0%, transparent 60%);
 }
 
 .auth-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-xl);
   width: 100%;
-  max-width: 440px;
-  padding: 36px;
+  max-width: 460px;
+  padding: 40px;
+  transition: transform var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
 }
 
 .auth-header {
@@ -25,12 +40,22 @@
   margin-bottom: 28px;
 }
 
+.auth-header .auth-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
 .auth-header h2 {
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 800;
   color: var(--text-main);
   margin-bottom: 8px;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.6px;
 }
 
 .auth-header p {
@@ -41,7 +66,7 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .form-group {
@@ -51,7 +76,7 @@
 }
 
 .form-group label {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   color: var(--text-main);
 }
@@ -64,7 +89,7 @@
 
 .form-control {
   width: 100%;
-  padding: 10px 14px;
+  padding: 12px 16px;
   background-color: var(--bg-page);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
@@ -75,9 +100,9 @@
 }
 
 .form-control:focus {
-  background-color: var(--bg-card);
+  background-color: #ffffff;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-subtle);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 .form-hint {
@@ -86,9 +111,11 @@
 }
 
 .form-error {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--danger);
+  font-weight: 500;
   display: none;
+  margin-top: 2px;
 }
 
 .form-error.visible {
@@ -99,12 +126,20 @@
   padding: 12px 16px;
   border-radius: var(--radius-md);
   font-size: 0.9rem;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   display: none;
+  line-height: 1.4;
+  font-weight: 500;
 }
 
 .alert-box.visible {
   display: block;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .alert-danger {
@@ -115,8 +150,8 @@
 
 .alert-success {
   background-color: var(--success-bg);
-  border: 1px solid #bbf7d0;
-  color: var(--success);
+  border: 1px solid #a7f3d0;
+  color: #065f46;
 }
 
 .auth-footer {
@@ -124,30 +159,53 @@
   margin-top: 24px;
   padding-top: 20px;
   border-top: 1px solid var(--border-light);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
 }
 
 .auth-footer a {
   color: var(--primary);
-  font-weight: 600;
+  font-weight: 700;
+  transition: color var(--transition-fast);
 }
 
 .auth-footer a:hover {
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
+/* Demo Credentials Fast-Fill Card */
 .demo-credentials-box {
   background-color: var(--primary-light);
-  border: 1px dashed var(--primary-subtle);
+  border: 1px dashed rgba(79, 70, 229, 0.3);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
-  margin-top: 20px;
-  font-size: 0.82rem;
-  color: #1e40af;
+  padding: 16px;
+  margin-top: 24px;
+  font-size: 0.84rem;
+  color: #312e81;
 }
 
 .demo-credentials-box strong {
   display: block;
-  margin-bottom: 4px;
+  font-size: 0.88rem;
+  color: var(--primary);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.demo-credentials-box .demo-cred-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.demo-credentials-box code {
+  background: white;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-weight: 600;
+  color: #1e1b4b;
+  border: 1px solid rgba(79, 70, 229, 0.15);
 }

@@ -26,12 +26,29 @@ function initNavbar() {
 
   // Global search input handling
   const searchInput = document.getElementById('global-search-input');
+  const searchClearBtn = document.getElementById('nav-search-clear');
+
+  const updateClearBtn = () => {
+    if (!searchClearBtn) return;
+    if (searchInput && searchInput.value.trim().length > 0) {
+      searchClearBtn.style.display = 'block';
+    } else {
+      searchClearBtn.style.display = 'none';
+    }
+  };
+
   if (searchInput) {
+    updateClearBtn();
+
+    searchInput.addEventListener('input', () => {
+      updateClearBtn();
+    });
+
     searchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
         const query = searchInput.value.trim();
-        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
+        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '') {
           // If already on homepage, trigger filtering without reload if handler exists
           if (typeof handleSearchFilter === 'function') {
             handleSearchFilter(query);
@@ -39,6 +56,17 @@ function initNavbar() {
           }
         }
         window.location.href = `/index.html?search=${encodeURIComponent(query)}`;
+      }
+    });
+  }
+
+  if (searchClearBtn && searchInput) {
+    searchClearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      searchClearBtn.style.display = 'none';
+      searchInput.focus();
+      if (typeof handleSearchFilter === 'function') {
+        handleSearchFilter('');
       }
     });
   }
