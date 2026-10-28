@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found — ShopEasy</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="/index.html" class="nav-logo">
+        <span class="nav-logo-icon">S</span>
+        <span>ShopEasy</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/index.html" class="nav-link">Home</a></li>
+          <li><a href="/index.html#products-section" class="nav-link">Products</a></li>
+          <li>
+            <a href="/cart.html" class="nav-cart-btn" id="nav-cart-btn" title="Shopping Cart">
+              <span>🛒</span>
+              <span>Cart</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 404 Container -->
+  <main class="container" style="padding: 100px 20px; text-align: center;">
+    <div style="max-width: 500px; margin: 0 auto; background: white; padding: 48px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);">
+      <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin-bottom: 8px;">404</div>
+      <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px;">Page Not Found</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 28px; line-height: 1.6;">
+        The page you are looking for doesn't exist, has been moved, or is temporarily unavailable.
+      </p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <a href="/index.html" class="btn btn-primary">Return to Homepage</a>
+        <a href="/index.html#products-section" class="btn btn-secondary">Browse Catalog</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-bottom">
+      <div>&copy; 2026 ShopEasy • CodeAlpha Full Stack Development Internship</div>
+      <div>Page Not Found</div>
+    </div>
+  </footer>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

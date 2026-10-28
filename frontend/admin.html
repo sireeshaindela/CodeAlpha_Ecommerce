@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administrator Dashboard — ShopEasy</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="/index.html" class="nav-logo">
+        <span class="nav-logo-icon">S</span>
+        <span>ShopEasy</span>
+      </a>
+
+      <div style="font-size: 0.9rem; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 4px 12px; border-radius: var(--radius-full); display: flex; align-items: center; gap: 6px;">
+        <span>🛡️</span> Admin Control Panel
+      </div>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/index.html" class="nav-link">Storefront</a></li>
+          <li><a href="/profile.html" class="nav-link">My Account</a></li>
+          <li id="nav-user-container">
+            <a href="/login.html" class="btn btn-outline btn-sm">Log In</a>
+          </li>
+        </ul>
+      </nav>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle navigation">☰</button>
+    </div>
+  </header>
+
+  <!-- Admin Container -->
+  <main class="container" style="padding-top: 32px; padding-bottom: 60px;" id="admin-container">
+    <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px;">Admin Dashboard</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Manage catalog products, stock levels, and customer orders</p>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div style="display: flex; gap: 8px;">
+        <button id="tab-btn-products" class="btn btn-primary btn-sm active" onclick="switchAdminTab('products')">
+          📦 Products &amp; Inventory
+        </button>
+        <button id="tab-btn-orders" class="btn btn-secondary btn-sm" onclick="switchAdminTab('orders')">
+          📑 Customer Orders
+        </button>
+      </div>
+    </div>
+
+    <!-- Section 1: Products Management -->
+    <div id="admin-section-products">
+      <!-- Add Product Form Card -->
+      <div style="background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm); margin-bottom: 32px;">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light);">
+          Add New Product to Catalog
+        </h3>
+
+        <form id="admin-create-product-form">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 16px;">
+            <div class="form-group">
+              <label for="new-prod-name">Product Name *</label>
+              <input type="text" id="new-prod-name" class="form-control" required placeholder="e.g. Ergonomic Office Chair" />
+            </div>
+
+            <div class="form-group">
+              <label for="new-prod-category">Category *</label>
+              <input type="text" id="new-prod-category" class="form-control" required placeholder="Electronics, Home, Fashion..." />
+            </div>
+
+            <div class="form-group">
+              <label for="new-prod-price">Price in Rupees (₹) *</label>
+              <input type="number" id="new-prod-price" class="form-control" step="0.01" min="1" required placeholder="1499.00" />
+            </div>
+
+            <div class="form-group">
+              <label for="new-prod-stock">Available Stock *</label>
+              <input type="number" id="new-prod-stock" class="form-control" min="0" required placeholder="25" />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label for="new-prod-image">Image URL *</label>
+            <input type="url" id="new-prod-image" class="form-control" required placeholder="https://images.unsplash.com/photo-..." />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="new-prod-desc">Product Description *</label>
+            <textarea id="new-prod-desc" class="form-control" rows="3" required placeholder="Detailed specifications, features, warranty..."></textarea>
+          </div>
+
+          <button type="submit" id="new-prod-submit-btn" class="btn btn-primary">
+            + Publish Product to Storefront
+          </button>
+        </form>
+      </div>
+
+      <!-- Current Inventory Table -->
+      <div style="background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm);">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 18px;">Catalog Inventory</h3>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead style="background: var(--bg-page); border-bottom: 1px solid var(--border-light); color: var(--text-muted);">
+              <tr>
+                <th style="padding: 12px 16px;">Product Name</th>
+                <th style="padding: 12px 16px;">Category</th>
+                <th style="padding: 12px 16px;">Price</th>
+                <th style="padding: 12px 16px;">Live Stock</th>
+                <th style="padding: 12px 16px;">Status</th>
+                <th style="padding: 12px 16px; text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-products-tbody">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Orders Management -->
+    <div id="admin-section-orders" style="display: none;">
+      <div style="background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm);">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 18px;">Customer Orders Across System</h3>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+            <thead style="background: var(--bg-page); border-bottom: 1px solid var(--border-light); color: var(--text-muted);">
+              <tr>
+                <th style="padding: 12px 16px;">Order #</th>
+                <th style="padding: 12px 16px;">Customer</th>
+                <th style="padding: 12px 16px;">Date</th>
+                <th style="padding: 12px 16px;">Total</th>
+                <th style="padding: 12px 16px;">Order Status</th>
+                <th style="padding: 12px 16px; text-align: right;">View</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-tbody">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-bottom">
+      <div>&copy; 2026 ShopEasy • CodeAlpha Full Stack Development Internship</div>
+      <div>Administrator Portal</div>
+    </div>
+  </footer>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

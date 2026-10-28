@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log In — ShopEasy</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="/index.html" class="nav-logo">
+        <span class="nav-logo-icon">S</span>
+        <span>ShopEasy</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/index.html" class="nav-link">Home</a></li>
+          <li><a href="/register.html" class="btn btn-primary btn-sm">Create Account</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Auth Layout -->
+  <main class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h2>Welcome Back</h2>
+        <p>Log in to access your saved cart, orders, and profile</p>
+      </div>
+
+      <div id="login-alert" class="alert-box"></div>
+
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-control" required placeholder="name@example.com" autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" class="form-control" required placeholder="••••••••" autocomplete="current-password" />
+        </div>
+
+        <button type="submit" id="login-submit-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 8px;">
+          Log In &rarr;
+        </button>
+      </form>
+
+      <!-- Quick Fill Buttons for Project Demonstration -->
+      <div class="demo-credentials-box">
+        <strong>💡 Internship Demonstration Accounts:</strong>
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+          <button type="button" class="btn btn-secondary btn-sm" style="flex:1; font-size:0.75rem;" onclick="fillDemoCredentials('customer')">
+            Demo Customer
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" style="flex:1; font-size:0.75rem;" onclick="fillDemoCredentials('admin')">
+            Demo Admin
+          </button>
+        </div>
+      </div>
+
+      <div class="auth-footer">
+        Don't have an account yet? <a href="/register.html">Sign Up</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/auth.js"></script>
+</body>
+</html>

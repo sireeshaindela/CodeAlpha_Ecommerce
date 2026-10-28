@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout — ShopEasy</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/cart.css" />
+  <link rel="stylesheet" href="/css/checkout.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="/index.html" class="nav-logo">
+        <span class="nav-logo-icon">S</span>
+        <span>ShopEasy</span>
+      </a>
+
+      <div style="font-weight: 600; font-size: 0.95rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+        <span>🔒</span> Secure 256-bit Encrypted Checkout
+      </div>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/cart.html" class="nav-link">&larr; Return to Cart</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Checkout Container -->
+  <main class="container" style="padding-top: 24px;" id="checkout-container">
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px;">Checkout</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Enter your shipping address and confirm your order</p>
+    </div>
+
+    <form id="checkout-form">
+      <div class="checkout-grid">
+        <!-- Left: Shipping Address & Payment Selection -->
+        <div>
+          <!-- Shipping Form Card -->
+          <div class="checkout-card" style="margin-bottom: 24px;">
+            <h2 class="checkout-card-title">
+              <span>📍</span> 1. Shipping Details
+            </h2>
+
+            <div class="form-row" style="margin-bottom: 16px;">
+              <div class="form-group">
+                <label for="ship-name">Recipient Full Name *</label>
+                <input type="text" id="ship-name" class="form-control" required placeholder="e.g. John Doe" />
+              </div>
+
+              <div class="form-group">
+                <label for="ship-phone">Contact Phone Number *</label>
+                <input type="tel" id="ship-phone" class="form-control" required placeholder="e.g. +91 98765 43210" />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label for="ship-street">Street Address / Apartment *</label>
+              <input type="text" id="ship-street" class="form-control" required placeholder="e.g. 123 MG Road, Apt 4B" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ship-city">City *</label>
+                <input type="text" id="ship-city" class="form-control" required placeholder="e.g. Bengaluru" />
+              </div>
+
+              <div class="form-group">
+                <label for="ship-state">State *</label>
+                <input type="text" id="ship-state" class="form-control" required placeholder="e.g. Karnataka" />
+              </div>
+            </div>
+
+            <div class="form-row" style="margin-top: 16px;">
+              <div class="form-group">
+                <label for="ship-zip">Postal / PIN Code *</label>
+                <input type="text" id="ship-zip" class="form-control" required placeholder="e.g. 560001" />
+              </div>
+
+              <div class="form-group">
+                <label for="ship-country">Country</label>
+                <input type="text" id="ship-country" class="form-control" value="India" readonly style="background-color: var(--border-light); cursor: not-allowed;" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Method Card -->
+          <div class="checkout-card">
+            <h2 class="checkout-card-title">
+              <span>💳</span> 2. Payment Method
+            </h2>
+
+            <div class="payment-options">
+              <label class="payment-card-option selected">
+                <input type="radio" name="paymentMethod" value="cash_on_delivery" checked style="accent-color: var(--primary);" />
+                <span class="payment-icon">💵</span>
+                <div class="payment-details">
+                  <h4>Cash on Delivery (Demonstration Option)</h4>
+                  <p>Pay cash or UPI upon delivery. Safe and instant confirmation without entering real bank cards.</p>
+                </div>
+              </label>
+
+              <div style="background: var(--bg-page); border: 1px dashed var(--border-light); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 0.85rem; color: var(--text-muted);">
+                ℹ️ <em>In this internship demonstration project, we prioritize user security by utilizing a verified Cash-on-Delivery flow rather than collecting credit card details.</em>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Order Summary Breakdown -->
+        <div>
+          <div class="checkout-card" style="position: sticky; top: 96px;">
+            <h3 class="summary-title">Order Review</h3>
+
+            <div class="checkout-items-preview" id="checkout-items-list">
+              <!-- Rendered by checkout.js -->
+            </div>
+
+            <div class="summary-row" style="border-top: 1px solid var(--border-light); padding-top: 14px;">
+              <span>Subtotal</span>
+              <span id="checkout-subtotal">₹0.00</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Shipping Fee</span>
+              <span id="checkout-shipping">₹0.00</span>
+            </div>
+
+            <div class="summary-row total-row">
+              <span>Total Payable</span>
+              <span id="checkout-total" style="color: var(--primary);">₹0.00</span>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <button type="submit" id="place-order-btn" class="btn btn-primary btn-lg" style="width: 100%;">
+                Confirm &amp; Place Order &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-bottom">
+      <div>&copy; 2026 ShopEasy • CodeAlpha Full Stack Development Internship</div>
+      <div>Safe Demonstration Checkout</div>
+    </div>
+  </footer>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/checkout.js"></script>
+</body>
+</html>

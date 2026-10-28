@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy — Simple Full-Stack E-Commerce Store</title>
+  <meta name="description" content="ShopEasy is a modern, responsive full-stack e-commerce store built for CodeAlpha Full Stack Development Internship Task 1." />
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="/index.html" class="nav-logo">
+        <span class="nav-logo-icon">S</span>
+        <span>ShopEasy</span>
+      </a>
+
+      <!-- Global Search -->
+      <div class="nav-search">
+        <span class="nav-search-icon">🔍</span>
+        <input type="text" id="global-search-input" placeholder="Search products, brands, categories..." aria-label="Search products" />
+      </div>
+
+      <!-- Navigation Links & User Actions -->
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/index.html" class="nav-link active">Home</a></li>
+          <li><a href="#products-section" class="nav-link">Products</a></li>
+          <li><a href="#about-section" class="nav-link">About</a></li>
+          <li>
+            <a href="/cart.html" class="nav-cart-btn" id="nav-cart-btn" title="Shopping Cart">
+              <span>🛒</span>
+              <span>Cart</span>
+              <span class="cart-badge" id="nav-cart-count" style="display: none;">0</span>
+            </a>
+          </li>
+          <li id="nav-user-container">
+            <!-- Populated dynamically by app.js (User Profile menu or Login/Register buttons) -->
+            <a href="/login.html" class="btn btn-outline btn-sm">Log In</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Mobile Hamburger Button -->
+      <button class="mobile-nav-toggle" aria-label="Toggle navigation">☰</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Banner -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge">✨ CodeAlpha Full-Stack Internship Showcase</div>
+          <h1>Discover Quality Tech & Everyday Essentials</h1>
+          <p>Handpicked electronics, ergonomic accessories, and smart lifestyle products at transparent prices with Free Shipping on orders over ₹2,000.</p>
+          <div class="hero-actions">
+            <a href="#products-section" class="btn btn-primary btn-lg" style="background: white; color: var(--primary);">Shop Now &rarr;</a>
+            <a href="#about-section" class="btn btn-outline btn-lg" style="color: white; border-color: rgba(255,255,255,0.4);">Learn More</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-card-preview">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80" alt="Noise-Cancelling Headphones" />
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 4px;">Top Rated Electronics</h3>
+            <p style="font-size: 0.85rem; color: #dbeafe;">Premium Sound &amp; Long Battery Life</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Section -->
+    <section class="container" id="products-section" style="padding-top: 20px;">
+      <div class="section-header">
+        <h2 class="section-title">Explore Our Products</h2>
+        <p class="section-subtitle">Real-time inventory connected directly to MongoDB database</p>
+      </div>
+
+      <!-- Filter & Sort Bar -->
+      <div class="filter-bar" id="categories-section">
+        <div class="category-chips" id="category-chips">
+          <button class="category-chip active">All</button>
+        </div>
+
+        <div class="sort-container">
+          <label for="sort-select">Sort by:</label>
+          <select id="sort-select" class="sort-select">
+            <option value="newest">Newest Arrivals</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="name_asc">Name: A to Z</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Dynamic Product Cards Grid -->
+      <div class="product-grid" id="product-grid">
+        <div class="spinner-container" style="grid-column: 1 / -1;">
+          <div class="spinner"></div>
+          <p>Connecting to backend API...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Value Propositions / About Section -->
+    <section class="container" id="about-section" style="margin: 60px auto 40px;">
+      <div style="background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 48px; box-shadow: var(--shadow-sm);">
+        <div style="text-align: center; max-width: 600px; margin: 0 auto 36px;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">Why Choose ShopEasy</span>
+          <h2 style="font-size: 1.85rem; font-weight: 800; margin-top: 6px; color: var(--text-main);">Built for Speed, Reliability, &amp; Security</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px;">
+          <div style="text-align: center;">
+            <div style="width: 56px; height: 56px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px;">🚚</div>
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 6px;">Free &amp; Fast Shipping</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Orders over ₹2,000 qualify for complimentary fast delivery across India.</p>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="width: 56px; height: 56px; background: var(--success-bg); color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px;">🛡️</div>
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 6px;">Secure Sessions &amp; Auth</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Bcryptjs password hashing, HttpOnly persistent cookies, and robust server-side validation.</p>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="width: 56px; height: 56px; background: #fef3c7; color: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px;">💵</div>
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 6px;">Cash on Delivery</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Safe demonstration checkout with cash on delivery and real-time inventory updates.</p>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="width: 56px; height: 56px; background: #ede9fe; color: #7c3aed; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 16px;">⚙️</div>
+            <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 6px;">Persistent Cart &amp; Orders</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Mongoose models persist your items, order snapshots, and shipping addresses across logins.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="nav-logo" style="margin-bottom: 12px;">
+            <span class="nav-logo-icon">S</span>
+            <span>ShopEasy</span>
+          </div>
+          <p>ShopEasy is an end-to-end full-stack e-commerce project developed as part of the <strong>CodeAlpha Full Stack Development Internship (Task 1: Simple E-commerce Store)</strong>.</p>
+          <div style="margin-top: 12px;">
+            <span class="footer-badge">Internship Project • Task 1</span>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="#products-section">Catalog</a></li>
+            <li><a href="/cart.html">Shopping Cart</a></li>
+            <li><a href="/orders.html">Order History</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Account</h4>
+          <ul class="footer-links">
+            <li><a href="/login.html">Login</a></li>
+            <li><a href="/register.html">Register</a></li>
+            <li><a href="/profile.html">User Profile</a></li>
+            <li><a href="/admin.html">Admin Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Project Details</h4>
+          <p><strong>Stack:</strong> HTML5, CSS3, Vanilla JS, Node.js, Express, MongoDB, Mongoose, bcryptjs, connect-mongo.</p>
+          <p>All prices stored in <strong>integer paise</strong> to ensure floating-point arithmetic precision.</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 ShopEasy • CodeAlpha Full Stack Development Internship</div>
+        <div>Built with pure HTML, CSS, JavaScript, Express &amp; MongoDB</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/products.js"></script>
+</body>
+</html>
