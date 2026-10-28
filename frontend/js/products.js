@@ -61,10 +61,27 @@ function initSorting() {
       loadProducts();
     });
   }
+
+  // Also bind live search input clearing so clearing the box immediately resets search
+  const searchInput = document.getElementById('global-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (val === '' && currentSearch !== '') {
+        currentSearch = '';
+        loadProducts();
+      }
+    });
+  }
 }
 
 function handleCategoryChange(category) {
   currentCategory = category.toLowerCase() === 'all' ? 'all' : category;
+
+  // Clear search query when explicitly switching categories for a clean view
+  currentSearch = '';
+  const searchInput = document.getElementById('global-search-input');
+  if (searchInput) searchInput.value = '';
 
   // Update active chip classes
   const chips = document.querySelectorAll('.category-chip');
@@ -228,6 +245,8 @@ function resetFilters() {
   currentSort = 'newest';
   const searchInput = document.getElementById('global-search-input');
   if (searchInput) searchInput.value = '';
+  const sortSelect = document.getElementById('sort-select');
+  if (sortSelect) sortSelect.value = 'newest';
   initCategories();
   loadProducts();
 }
