@@ -31,6 +31,18 @@
       <nav>
         <ul class="nav-links">
           <li><a href="/index.html" class="nav-link">Home</a></li>
+          <li class="nav-dropdown-item">
+            <button type="button" class="nav-link nav-dropdown-btn" id="nav-categories-btn" onclick="toggleNavCategoryMenu(event)">
+              <span>Categories</span> <span style="font-size: 0.75rem;">▼</span>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-categories-dropdown">
+              <a href="/index.html?category=All" onclick="handleNavbarCategorySelect(event, 'All')">All Categories</a>
+              <a href="/index.html?category=Electronics" onclick="handleNavbarCategorySelect(event, 'Electronics')">📱 Electronics</a>
+              <a href="/index.html?category=Accessories" onclick="handleNavbarCategorySelect(event, 'Accessories')">🎧 Accessories</a>
+              <a href="/index.html?category=Home" onclick="handleNavbarCategorySelect(event, 'Home')">🏠 Home</a>
+              <a href="/index.html?category=Fashion" onclick="handleNavbarCategorySelect(event, 'Fashion')">👕 Fashion</a>
+            </div>
+          </li>
           <li><a href="/index.html#products-section" class="nav-link">Products</a></li>
           <li>
             <a href="/cart.html" class="nav-cart-btn active" id="nav-cart-btn" title="Shopping Cart">

@@ -108,7 +108,19 @@
 
       <!-- Current Inventory Table -->
       <div style="background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-sm);">
-        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 18px;">Catalog Inventory</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+          <h3 style="font-size: 1.25rem; font-weight: 700;">Catalog Inventory</h3>
+          <div style="font-size: 0.85rem; color: var(--text-muted);" id="admin-inventory-count">
+            Loading inventory...
+          </div>
+        </div>
+
+        <!-- Category Filter Chips for Admin Dashboard -->
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;" id="admin-category-chips">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">Filter by Category:</span>
+          <button type="button" class="category-chip active" onclick="filterAdminCategory('All')">All</button>
+        </div>
+
         <div style="overflow-x: auto;">
           <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
             <thead style="background: var(--bg-page); border-bottom: 1px solid var(--border-light); color: var(--text-muted);">

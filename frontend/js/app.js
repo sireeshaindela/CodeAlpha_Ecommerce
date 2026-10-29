@@ -71,14 +71,45 @@ function initNavbar() {
     });
   }
 
-  // Close dropdown on outside click
+  // Close dropdowns on outside click
   document.addEventListener('click', (e) => {
     const userMenu = document.querySelector('.nav-user-menu');
     const dropdown = document.querySelector('.user-dropdown');
     if (userMenu && dropdown && !userMenu.contains(e.target)) {
       dropdown.classList.remove('show');
     }
+
+    const catDropdown = document.getElementById('nav-categories-dropdown');
+    const catBtn = document.getElementById('nav-categories-btn');
+    if (catDropdown && catBtn && !catDropdown.contains(e.target) && !catBtn.contains(e.target)) {
+      catDropdown.classList.remove('show');
+    }
   });
+}
+
+/**
+ * Toggle category navigation menu dropdown in header
+ */
+function toggleNavCategoryMenu(e) {
+  e.stopPropagation();
+  const dropdown = document.getElementById('nav-categories-dropdown');
+  if (dropdown) {
+    dropdown.classList.toggle('show');
+  }
+}
+
+/**
+ * Handle category click from header dropdown
+ */
+function handleNavbarCategorySelect(e, category) {
+  const dropdown = document.getElementById('nav-categories-dropdown');
+  if (dropdown) dropdown.classList.remove('show');
+
+  const isHomepage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname === '';
+  if (isHomepage && typeof handleCategoryChange === 'function') {
+    e.preventDefault();
+    handleCategoryChange(category);
+  }
 }
 
 /**

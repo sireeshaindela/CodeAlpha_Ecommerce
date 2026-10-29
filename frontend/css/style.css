@@ -361,6 +361,77 @@ button, input, select, textarea {
   margin: 6px 0;
 }
 
+/* Category Navigation Dropdown */
+.nav-dropdown-item {
+  position: relative;
+}
+
+.nav-dropdown-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  min-width: 200px;
+  display: none;
+  flex-direction: column;
+  padding: 8px 0;
+  z-index: 102;
+  animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-dropdown-menu.show {
+  display: flex;
+}
+
+.nav-dropdown-menu a {
+  padding: 10px 18px;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-body);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-dropdown-menu a:hover {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Category Badge Buttons */
+.category-badge-btn {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid rgba(79, 70, 229, 0.2);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.category-badge-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
 .mobile-nav-toggle {
   display: none;
   background: none;

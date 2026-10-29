@@ -56,9 +56,9 @@ function renderDetails(product) {
 
       <!-- Product Info -->
       <div style="display: flex; flex-direction: column;">
-        <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-          ${escapeHtml(product.category)}
-        </span>
+        <a href="/index.html?category=${encodeURIComponent(product.category)}" style="display: inline-block; font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; width: fit-content;" title="Browse all ${escapeHtml(product.category)} products">
+          ${escapeHtml(product.category)} &rarr;
+        </a>
         <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-main); line-height: 1.25; margin-bottom: 16px;">
           ${escapeHtml(product.name)}
         </h1>

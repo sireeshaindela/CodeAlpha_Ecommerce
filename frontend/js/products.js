@@ -45,6 +45,7 @@ async function initCategories() {
         (cat) => `
         <button 
           type="button"
+          data-category="${escapeHtml(cat.toLowerCase())}"
           class="category-chip ${cat.toLowerCase() === currentCategory.toLowerCase() ? 'active' : ''}" 
           onclick="handleCategoryChange('${escapeHtml(cat)}')"
         >
@@ -91,7 +92,7 @@ function initSorting() {
 }
 
 function handleCategoryChange(category) {
-  currentCategory = category.toLowerCase() === 'all' ? 'all' : category;
+  currentCategory = (!category || category.toLowerCase() === 'all') ? 'all' : category.trim();
 
   // Clear search query when explicitly switching categories for a clean view
   currentSearch = '';
@@ -103,12 +104,46 @@ function handleCategoryChange(category) {
   // Update active chip classes
   const chips = document.querySelectorAll('.category-chip');
   chips.forEach((chip) => {
-    if (chip.textContent.trim().toLowerCase() === category.toLowerCase()) {
+    const chipCat = chip.getAttribute('data-category') || chip.textContent.trim().toLowerCase();
+    if (chipCat === currentCategory.toLowerCase()) {
       chip.classList.add('active');
     } else {
       chip.classList.remove('active');
     }
   });
+
+  // Update section heading to reflect selected category
+  const sectionTitle = document.querySelector('.section-title');
+  const sectionSubtitle = document.querySelector('.section-subtitle');
+  if (sectionTitle) {
+    sectionTitle.textContent = currentCategory === 'all' 
+      ? 'Explore Our Products' 
+      : `${currentCategory} Collection`;
+  }
+  if (sectionSubtitle) {
+    sectionSubtitle.textContent = currentCategory === 'all' 
+      ? 'Real-time inventory connected directly to MongoDB database' 
+      : `Browse handpicked products in ${currentCategory}`;
+  }
+
+  // Update browser URL query string without reloading page
+  try {
+    const newUrl = currentCategory === 'all' 
+      ? window.location.pathname 
+      : `${window.location.pathname}?category=${encodeURIComponent(currentCategory)}`;
+    window.history.replaceState({ category: currentCategory }, '', newUrl);
+  } catch (e) {
+    // History API fallback
+  }
+
+  // Smooth scroll to products section if user clicked from top of page
+  const section = document.getElementById('products-section');
+  if (section) {
+    const rect = section.getBoundingClientRect();
+    if (rect.top < -20 || rect.top > window.innerHeight) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 
   loadProducts();
 }
@@ -166,9 +201,9 @@ async function loadProducts() {
       grid.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1;">
           <div class="empty-icon">🔍</div>
-          <h3 class="empty-title">No products found</h3>
-          <p class="empty-text">We couldn't find any products matching your filters. Try adjusting your search, category, or sort option.</p>
-          <button class="btn btn-primary" onclick="resetFilters()">View All Products</button>
+          <h3 class="empty-title">${currentCategory !== 'all' ? `No products found in "${escapeHtml(currentCategory)}"` : 'No products found'}</h3>
+          <p class="empty-text">We couldn't find any products matching your filters. Try choosing another category or clearing your search.</p>
+          <button class="btn btn-primary" onclick="handleCategoryChange('All')">View All Categories</button>
         </div>
       `;
       return;
@@ -218,7 +253,15 @@ function renderProductCard(product) {
             onerror="this.onerror=null; this.src='${fallbackSvg}'"
           />
         </a>
-        <span class="product-badge">${escapeHtml(product.category)}</span>
+        <button 
+          type="button" 
+          class="product-badge" 
+          onclick="event.preventDefault(); event.stopPropagation(); handleCategoryChange('${escapeHtml(product.category)}')" 
+          title="Filter by ${escapeHtml(product.category)}"
+          style="cursor: pointer; border: none;"
+        >
+          ${escapeHtml(product.category)}
+        </button>
       </div>
       <div class="product-content">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">

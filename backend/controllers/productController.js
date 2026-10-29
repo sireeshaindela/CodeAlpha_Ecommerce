@@ -20,7 +20,8 @@ async function getProducts(req, res, next) {
 
     // Category filter
     if (category && category.trim() && category.toLowerCase() !== 'all') {
-      filter.category = new RegExp(`^${category.trim()}$`, 'i');
+      const sanitized = category.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.category = new RegExp(`^${sanitized}$`, 'i');
     }
 
     // Featured filter

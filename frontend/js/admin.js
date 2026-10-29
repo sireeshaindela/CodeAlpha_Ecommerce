@@ -3,6 +3,8 @@
  */
 
 let activeTab = 'products';
+let adminProductsList = [];
+let currentAdminCategory = 'all';
 
 document.addEventListener('DOMContentLoaded', async () => {
   await verifyAdminAccess();
@@ -68,49 +70,147 @@ async function loadAdminProducts() {
   tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;">Loading products...</td></tr>`;
 
   try {
-    const res = await api.products.getAll({ limit: 50 });
-    const products = res.data.products;
+    const res = await api.products.getAll({ limit: 100 });
+    adminProductsList = res.data.products || [];
 
-    if (!products || products.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;">No products found. Add your first product below!</td></tr>`;
-      return;
-    }
-
-    tableBody.innerHTML = products
-      .map(
-        (p) => `
-        <tr style="border-bottom: 1px solid var(--border-light);">
-          <td style="padding: 12px 16px;">
-            <strong>${escapeHtml(p.name)}</strong>
-          </td>
-          <td style="padding: 12px 16px;">${escapeHtml(p.category)}</td>
-          <td style="padding: 12px 16px;">${formatCurrency(p.price)}</td>
-          <td style="padding: 12px 16px;">
-            <input 
-              type="number" 
-              min="0" 
-              value="${p.stockQuantity}" 
-              style="width: 70px; padding: 4px 8px; border: 1px solid var(--border-light); border-radius: var(--radius-sm);" 
-              onchange="handleUpdateStock('${p._id}', this.value)"
-            />
-          </td>
-          <td style="padding: 12px 16px;">
-            <span class="stock-tag ${p.isActive ? 'in-stock' : 'out-stock'}">
-              ${p.isActive ? 'Active' : 'Inactive'}
-            </span>
-          </td>
-          <td style="padding: 12px 16px; text-align: right;">
-            <button class="btn btn-danger btn-sm" onclick="handleDeactivateProduct('${p._id}')" ${!p.isActive ? 'disabled' : ''}>
-              ${p.isActive ? 'Deactivate' : 'Deactivated'}
-            </button>
-          </td>
-        </tr>
-      `
-      )
-      .join('');
+    await initAdminCategoryChips();
+    renderAdminProductsTable();
   } catch (err) {
     tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--danger);padding:24px;">${escapeHtml(err.message)}</td></tr>`;
   }
+}
+
+/**
+ * Initialize dynamic category filter chips for Admin Dashboard
+ */
+async function initAdminCategoryChips() {
+  const chipsContainer = document.getElementById('admin-category-chips');
+  if (!chipsContainer) return;
+
+  let categories = ['All'];
+  try {
+    const res = await api.products.getCategories();
+    categories = ['All', ...res.data.categories];
+  } catch (e) {
+    // Fallback: extract distinct categories from loaded products
+    const unique = [...new Set(adminProductsList.map((p) => p.category).filter(Boolean))];
+    categories = ['All', ...unique];
+  }
+
+  chipsContainer.innerHTML = `
+    <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">Filter by Category:</span>
+    ${categories
+      .map(
+        (cat) => `
+        <button 
+          type="button" 
+          data-category="${escapeHtml(cat.toLowerCase())}"
+          class="category-chip ${cat.toLowerCase() === currentAdminCategory.toLowerCase() ? 'active' : ''}" 
+          onclick="filterAdminCategory('${escapeHtml(cat)}')"
+        >
+          ${escapeHtml(cat)}
+        </button>
+      `
+      )
+      .join('')}
+  `;
+}
+
+/**
+ * Filter Admin Dashboard products by category
+ */
+function filterAdminCategory(category) {
+  currentAdminCategory = (!category || category.toLowerCase() === 'all') ? 'all' : category.trim();
+
+  // Update active chip classes
+  const chips = document.querySelectorAll('#admin-category-chips .category-chip');
+  chips.forEach((chip) => {
+    const chipCat = chip.getAttribute('data-category') || chip.textContent.trim().toLowerCase();
+    if (chipCat === currentAdminCategory.toLowerCase()) {
+      chip.classList.add('active');
+    } else {
+      chip.classList.remove('active');
+    }
+  });
+
+  renderAdminProductsTable();
+}
+
+/**
+ * Render filtered products table in Admin Dashboard
+ */
+function renderAdminProductsTable() {
+  const tableBody = document.getElementById('admin-products-tbody');
+  const countLabel = document.getElementById('admin-inventory-count');
+  if (!tableBody) return;
+
+  // Filter products by selected category
+  const filtered = currentAdminCategory === 'all'
+    ? adminProductsList
+    : adminProductsList.filter((p) => (p.category || '').toLowerCase() === currentAdminCategory.toLowerCase());
+
+  // Update count text
+  if (countLabel) {
+    countLabel.textContent = currentAdminCategory === 'all'
+      ? `Showing all ${filtered.length} products`
+      : `Showing ${filtered.length} products in "${currentAdminCategory}"`;
+  }
+
+  if (filtered.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; padding: 36px 20px;">
+          <div style="font-size: 1.5rem; margin-bottom: 6px;">📦</div>
+          <strong>No products found in "${escapeHtml(currentAdminCategory)}"</strong>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">No items match this category filter.</p>
+          <button type="button" class="btn btn-primary btn-sm" style="margin-top: 10px;" onclick="filterAdminCategory('All')">View All Products</button>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tableBody.innerHTML = filtered
+    .map(
+      (p) => `
+      <tr style="border-bottom: 1px solid var(--border-light);">
+        <td style="padding: 12px 16px;">
+          <strong>${escapeHtml(p.name)}</strong>
+        </td>
+        <td style="padding: 12px 16px;">
+          <button 
+            type="button" 
+            class="category-badge-btn" 
+            onclick="filterAdminCategory('${escapeHtml(p.category)}')" 
+            title="Filter by ${escapeHtml(p.category)}"
+          >
+            ${escapeHtml(p.category)}
+          </button>
+        </td>
+        <td style="padding: 12px 16px;">${formatCurrency(p.price)}</td>
+        <td style="padding: 12px 16px;">
+          <input 
+            type="number" 
+            min="0" 
+            value="${p.stockQuantity}" 
+            style="width: 70px; padding: 4px 8px; border: 1px solid var(--border-light); border-radius: var(--radius-sm);" 
+            onchange="handleUpdateStock('${p._id}', this.value)"
+          />
+        </td>
+        <td style="padding: 12px 16px;">
+          <span class="stock-tag ${p.isActive ? 'in-stock' : 'out-stock'}">
+            ${p.isActive ? 'Active' : 'Inactive'}
+          </span>
+        </td>
+        <td style="padding: 12px 16px; text-align: right;">
+          <button class="btn btn-danger btn-sm" onclick="handleDeactivateProduct('${p._id}')" ${!p.isActive ? 'disabled' : ''}>
+            ${p.isActive ? 'Deactivate' : 'Deactivated'}
+          </button>
+        </td>
+      </tr>
+    `
+    )
+    .join('');
 }
 
 async function handleUpdateStock(productId, newStock) {
