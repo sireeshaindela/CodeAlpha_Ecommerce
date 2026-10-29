@@ -8,6 +8,26 @@ let currentSearch = '';
 let currentSort = 'newest';
 let searchDebounceTimer = null;
 
+// Canonical category mapping to prevent casing or plural mismatches
+const CANONICAL_CATEGORIES = {
+  'all': 'all',
+  'accessories': 'Accessories',
+  'accessory': 'Accessories',
+  'electronics': 'Electronics',
+  'electronic': 'Electronics',
+  'fashion': 'Fashion',
+  'home': 'Home'
+};
+
+function normalizeCategory(category) {
+  return String(category ?? '').trim().toLowerCase();
+}
+
+function getCanonicalCategory(category) {
+  const norm = normalizeCategory(category);
+  return CANONICAL_CATEGORIES[norm] || String(category ?? '').trim();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Read query params if arriving from search or category URL
   const urlSearch = getQueryParam('search');
@@ -21,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const urlCategory = getQueryParam('category');
   if (urlCategory) {
-    currentCategory = urlCategory;
+    const norm = normalizeCategory(urlCategory);
+    currentCategory = norm === 'all' ? 'all' : getCanonicalCategory(urlCategory);
   }
 
   initCategories();
@@ -30,29 +51,43 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Fetch available categories and render interactive chips
+ * Fetch available categories and render interactive chips with event delegation
  */
 async function initCategories() {
   const container = document.getElementById('category-chips');
   if (!container) return;
 
+  // Event delegation: ensure all clicks on any category chip are handled reliably
+  if (!container.dataset.bound) {
+    container.dataset.bound = 'true';
+    container.addEventListener('click', (e) => {
+      const btn = e.target.closest('.category-chip');
+      if (!btn) return;
+      const cat = btn.getAttribute('data-category') || btn.textContent.trim();
+      handleCategoryChange(cat);
+    });
+  }
+
   try {
     const res = await api.products.getCategories();
-    const categories = ['All', ...res.data.categories];
+    const categories = ['All', ...(res.data.categories || [])];
 
     container.innerHTML = categories
-      .map(
-        (cat) => `
-        <button 
-          type="button"
-          data-category="${escapeHtml(cat.toLowerCase())}"
-          class="category-chip ${cat.toLowerCase() === currentCategory.toLowerCase() ? 'active' : ''}" 
-          onclick="handleCategoryChange('${escapeHtml(cat)}')"
-        >
-          ${escapeHtml(cat)}
-        </button>
-      `
-      )
+      .map((cat) => {
+        const norm = normalizeCategory(cat);
+        const activeNorm = normalizeCategory(currentCategory);
+        const isActive = norm === activeNorm || (norm === 'all' && activeNorm === 'all');
+        return `
+          <button 
+            type="button"
+            data-category="${escapeHtml(norm)}"
+            class="category-chip ${isActive ? 'active' : ''}" 
+            onclick="handleCategoryChange('${escapeHtml(cat)}')"
+          >
+            ${escapeHtml(cat)}
+          </button>
+        `;
+      })
       .join('');
   } catch (err) {
     console.error('Failed to load categories:', err);
@@ -91,8 +126,13 @@ function initSorting() {
   }
 }
 
+/**
+ * Handle category change from chips, navbar, or product card badges
+ */
 function handleCategoryChange(category) {
-  currentCategory = (!category || category.toLowerCase() === 'all') ? 'all' : category.trim();
+  const norm = normalizeCategory(category);
+  const isAll = norm === '' || norm === 'all';
+  currentCategory = isAll ? 'all' : getCanonicalCategory(category);
 
   // Clear search query when explicitly switching categories for a clean view
   currentSearch = '';
@@ -101,11 +141,12 @@ function handleCategoryChange(category) {
   const clearBtn = document.getElementById('nav-search-clear');
   if (clearBtn) clearBtn.style.display = 'none';
 
-  // Update active chip classes
+  // Update active chip classes reliably across all category chip elements
   const chips = document.querySelectorAll('.category-chip');
   chips.forEach((chip) => {
-    const chipCat = chip.getAttribute('data-category') || chip.textContent.trim().toLowerCase();
-    if (chipCat === currentCategory.toLowerCase()) {
+    const chipCat = normalizeCategory(chip.getAttribute('data-category') || chip.textContent);
+    const activeCat = normalizeCategory(currentCategory);
+    if (chipCat === activeCat || (isAll && chipCat === 'all')) {
       chip.classList.add('active');
     } else {
       chip.classList.remove('active');
@@ -116,19 +157,19 @@ function handleCategoryChange(category) {
   const sectionTitle = document.querySelector('.section-title');
   const sectionSubtitle = document.querySelector('.section-subtitle');
   if (sectionTitle) {
-    sectionTitle.textContent = currentCategory === 'all' 
+    sectionTitle.textContent = isAll 
       ? 'Explore Our Products' 
       : `${currentCategory} Collection`;
   }
   if (sectionSubtitle) {
-    sectionSubtitle.textContent = currentCategory === 'all' 
+    sectionSubtitle.textContent = isAll 
       ? 'Real-time inventory connected directly to MongoDB database' 
       : `Browse handpicked products in ${currentCategory}`;
   }
 
   // Update browser URL query string without reloading page
   try {
-    const newUrl = currentCategory === 'all' 
+    const newUrl = isAll 
       ? window.location.pathname 
       : `${window.location.pathname}?category=${encodeURIComponent(currentCategory)}`;
     window.history.replaceState({ category: currentCategory }, '', newUrl);
@@ -198,10 +239,11 @@ async function loadProducts() {
     const products = res.data.products;
 
     if (!products || products.length === 0) {
+      const isFiltered = currentCategory && currentCategory !== 'all';
       grid.innerHTML = `
         <div class="empty-state" style="grid-column: 1 / -1;">
           <div class="empty-icon">🔍</div>
-          <h3 class="empty-title">${currentCategory !== 'all' ? `No products found in "${escapeHtml(currentCategory)}"` : 'No products found'}</h3>
+          <h3 class="empty-title">${isFiltered ? `No products found in "${escapeHtml(currentCategory)}"` : 'No products found'}</h3>
           <p class="empty-text">We couldn't find any products matching your filters. Try choosing another category or clearing your search.</p>
           <button class="btn btn-primary" onclick="handleCategoryChange('All')">View All Categories</button>
         </div>
@@ -330,27 +372,9 @@ async function handleAddToCart(productId, btnElement) {
  * Reset all filters to default state (All products, newest, empty search)
  */
 function resetFilters() {
-  currentCategory = 'all';
-  currentSearch = '';
-  currentSort = 'newest';
-
-  const searchInput = document.getElementById('global-search-input');
-  if (searchInput) searchInput.value = '';
-
-  const clearBtn = document.getElementById('nav-search-clear');
-  if (clearBtn) clearBtn.style.display = 'none';
-
+  handleCategoryChange('All');
   const sortSelect = document.getElementById('sort-select');
   if (sortSelect) sortSelect.value = 'newest';
-
-  const chips = document.querySelectorAll('.category-chip');
-  chips.forEach((chip) => {
-    if (chip.textContent.trim().toLowerCase() === 'all') {
-      chip.classList.add('active');
-    } else {
-      chip.classList.remove('active');
-    }
-  });
-
+  currentSort = 'newest';
   loadProducts();
 }

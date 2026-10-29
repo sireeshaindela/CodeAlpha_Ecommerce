@@ -18,10 +18,16 @@ async function getProducts(req, res, next) {
       ];
     }
 
-    // Category filter
-    if (category && category.trim() && category.toLowerCase() !== 'all') {
-      const sanitized = category.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      filter.category = new RegExp(`^${sanitized}$`, 'i');
+    // Category filter with safe normalization and plural tolerance
+    if (category && typeof category === 'string' && category.trim() && category.trim().toLowerCase() !== 'all') {
+      const cleanCat = category.trim();
+      let regexPattern = `^${cleanCat.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`;
+      if (/^accessor(y|ies)$/i.test(cleanCat)) {
+        regexPattern = '^accessor(y|ies)$';
+      } else if (/^electronic(s)?$/i.test(cleanCat)) {
+        regexPattern = '^electronic(s)?$';
+      }
+      filter.category = new RegExp(regexPattern, 'i');
     }
 
     // Featured filter

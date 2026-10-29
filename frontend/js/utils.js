@@ -78,3 +78,10 @@ function escapeHtml(unsafe) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+/**
+ * Safe category normalization for reliable comparison across frontend & backend
+ */
+function normalizeCategory(category) {
+  return String(category ?? '').trim().toLowerCase();
+}

@@ -29,6 +29,17 @@ describe('Product Endpoints', () => {
       featured: false,
       isActive: true
     });
+
+    await Product.create({
+      name: 'Adjustable Aluminum Phone Stand',
+      description: 'Heavy duty foldable phone stand.',
+      price: 59900,
+      category: 'Accessories',
+      imageUrl: 'https://images.unsplash.com/photo-1586105251261-72a756497a11',
+      stockQuantity: 30,
+      featured: false,
+      isActive: true
+    });
   });
 
   test('GET /api/products - Returns list of active products', async () => {
@@ -36,16 +47,32 @@ describe('Product Endpoints', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(res.body.data.products.length).toBe(2);
-    expect(res.body.data.total).toBe(2);
+    expect(res.body.data.products.length).toBe(3);
+    expect(res.body.data.total).toBe(3);
   });
 
-  test('GET /api/products - Filters by category', async () => {
-    const res = await request(app).get('/api/products?category=Electronics');
+  test('GET /api/products - Filters by category Electronics and Accessories', async () => {
+    // 1. Electronics
+    const resElec = await request(app).get('/api/products?category=Electronics');
+    expect(resElec.status).toBe(200);
+    expect(resElec.body.data.products.length).toBe(1);
+    expect(resElec.body.data.products[0].name).toBe('Wireless Bluetooth Headphones');
 
-    expect(res.status).toBe(200);
-    expect(res.body.data.products.length).toBe(1);
-    expect(res.body.data.products[0].name).toBe('Wireless Bluetooth Headphones');
+    // 2. Accessories (case-insensitive)
+    const resAcc = await request(app).get('/api/products?category=accessories');
+    expect(resAcc.status).toBe(200);
+    expect(resAcc.body.data.products.length).toBe(1);
+    expect(resAcc.body.data.products[0].name).toBe('Adjustable Aluminum Phone Stand');
+
+    // 3. All category returns all 3 products
+    const resAll = await request(app).get('/api/products?category=All');
+    expect(resAll.status).toBe(200);
+    expect(resAll.body.data.products.length).toBe(3);
+
+    // 4. Non-existent category returns empty array gracefully
+    const resEmpty = await request(app).get('/api/products?category=Automotive');
+    expect(resEmpty.status).toBe(200);
+    expect(resEmpty.body.data.products.length).toBe(0);
   });
 
   test('GET /api/products - Searches by product name keyword', async () => {
@@ -60,8 +87,9 @@ describe('Product Endpoints', () => {
     const res = await request(app).get('/api/products?sort=price_asc');
 
     expect(res.status).toBe(200);
-    expect(res.body.data.products[0].price).toBe(49900); // 49900 < 299900
-    expect(res.body.data.products[1].price).toBe(299900);
+    expect(res.body.data.products[0].price).toBe(49900); // Mug: 49900 < 59900 < 299900
+    expect(res.body.data.products[1].price).toBe(59900); // Stand
+    expect(res.body.data.products[2].price).toBe(299900); // Headphones
   });
 
   test('GET /api/products/:id - Returns product details for valid ID', async () => {
